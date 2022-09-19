@@ -1,25 +1,31 @@
 import { useState } from 'react'
-import './App.css'
+import { Button, FormControl, FormControlLabel, Switch, Card, CardContent, Typography } from '@mui/material';
 
 function App() {
   const [isAnnualPayment, setIfAnnualPayment] = useState(true)
 
   return (
-    <div className="App">
-      <div className="product">
-        <div className="description">
-          <h1>志空会 年会費</h1>
-          <h5>¥2000{isAnnualPayment ? ' / year' : ''}</h5>
-        </div>
-      </div>
-      <form method="POST">
-        <label htmlFor="annual_payment">継続支払いにする</label>
-        <input type="checkbox" id="annual_payment" onClick={() => setIfAnnualPayment(!isAnnualPayment)} />
-        <button id="checkout-and-portal-button" type="submit">
-          支払う
-        </button>
-      </form>
-    </div>
+    <Card>
+      <CardContent>
+        <Typography variant='h5' component='h1'>
+          志空会 年会費
+        </Typography>
+        <Typography variant='body1' color='text.secondary'>
+          ¥2000{isAnnualPayment ? '（毎年）' : '（1回のみ）'}
+        </Typography>
+        <FormControl variant='outlined' component='form'>
+          <FormControlLabel control={
+            <Switch checked={isAnnualPayment}
+              onChange={() => setIfAnnualPayment(!isAnnualPayment)}
+              inputProps={{ role: 'switch' }}
+            />
+          } label="継続支払いにする" />
+          <Button id="checkout-and-portal-button" type="submit" variant="contained">
+            支払う
+          </Button>
+        </FormControl>
+      </CardContent>
+    </Card>
   )
 }
 
