@@ -10,6 +10,7 @@
     "watch-ts": "esbuild server.ts --watch --outfile=server.js",
     "watch-node": "nodemon server.js",
     "build": "tsc && vite build",
+    "start": "node server.js",
     "preview": "vite preview"
   },
   "dependencies": {
