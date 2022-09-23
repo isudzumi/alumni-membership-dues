@@ -6,7 +6,7 @@ import path from 'path';
 
 const { STRIPE_API_KEY } = process.env
 
-const fastify = Fastify({ logger: true })
+const fastify = Fastify({ logger: { level: 'warn' } })
 const stripe = new Stripe(STRIPE_API_KEY, {
   apiVersion: '2022-08-01',
 })
