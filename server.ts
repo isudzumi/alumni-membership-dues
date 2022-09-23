@@ -28,9 +28,10 @@ fastify.post<{ Body: { isAnnualPayment?: string; } }>('/create-checkout-session'
   }
   const prices = await stripe.prices.list({
     limit: 1,
-    lookup_keys: ['annual_membership_dues'],
+    type: isAnnualPayment ? 'recurring' : 'one_time',
     expand: ['data.product'],
   })
+
   if (!prices.data.length) {
     reply.code(400).send('Specified price object not found')
     return
@@ -43,7 +44,7 @@ fastify.post<{ Body: { isAnnualPayment?: string; } }>('/create-checkout-session'
         quantity: 1,
       }
     ],
-    mode: 'subscription',
+    mode: isAnnualPayment ? 'subscription' : 'payment',
     success_url: 'http://localhost:3000',
     cancel_url: 'http://localhost:3000',
   })
