@@ -7,7 +7,7 @@
     "dev": "vite",
     "dev:server": "concurrently 'npm:watch-ts' 'npm:watch-node'",
     "watch-ts": "esbuild server.ts --watch --outfile=server.js",
-    "watch-node": "chokidar 'server.js' -c 'node server.js'",
+    "watch-node": "nodemon server.js",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -26,9 +26,9 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",
-    "chokidar-cli": "^3.0.0",
     "concurrently": "^7.4.0",
     "esbuild": "^0.15.6",
+    "nodemon": "^2.0.20",
     "typescript": "^4.6.4",
     "vite": "^3.1.0"
   }
