@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:server": "concurrently 'npm:watch-ts' 'npm:watch-node'",
+    "dev": "concurrently 'npm:dev-client' 'npm:dev-server'",
+    "dev-client": "vite",
+    "dev-server": "concurrently 'npm:watch-ts' 'npm:watch-node'",
     "watch-ts": "esbuild server.ts --watch --outfile=server.js",
     "watch-node": "nodemon server.js",
     "build": "tsc && vite build",
