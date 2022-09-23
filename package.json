@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@fastify/formbody": "^7.3.0",
     "@fastify/static": "^6.5.0",
     "@mui/material": "^5.10.5",
     "fastify": "^4.6.0",
