@@ -45,15 +45,15 @@ fastify.post<{ Body: { isAnnualPayment?: string; } }>('/create-checkout-session'
       }
     ],
     mode: isAnnualPayment ? 'subscription' : 'payment',
-    success_url: 'http://localhost:3000',
-    cancel_url: 'http://localhost:3000',
+    success_url: 'http://localhost:8080',
+    cancel_url: 'http://localhost:8080',
   })
 
   reply.redirect(303, session.url)
 })
 
 const start = async () => {
-  await fastify.listen({ port: 3000 })
+  await fastify.listen({ port: process.env.PORT || 8080 })
 }
 
 try {
