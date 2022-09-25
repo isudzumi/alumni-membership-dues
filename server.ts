@@ -1,18 +1,32 @@
 import Fastify from 'fastify';
 import FastifyStatic from '@fastify/static';
 import FastifyFormbody from '@fastify/formbody';
+import { Static, Type } from "@sinclair/typebox";
 import { Stripe } from 'stripe';
 import path from 'path';
 
 const { STRIPE_API_KEY } = process.env
+
+if (!STRIPE_API_KEY) {
+  throw new Error(`STRIPE_API_KEY not set`);
+}
 
 const fastify = Fastify({ logger: { level: 'warn' } })
 const stripe = new Stripe(STRIPE_API_KEY, {
   apiVersion: '2022-08-01',
 })
 
-const checkIsAnnualPayment = (isAnnualPayment?: string): boolean => typeof isAnnualPayment === 'string';
-const isValidAnnualPaymentParameter = (isAnnualPayment: string): boolean => isAnnualPayment === 'true';
+const Payment =
+  Type.Object({
+    isAnnualPayment:
+      Type.Readonly(
+        Type.Boolean({
+          default: false
+        }),
+      )
+  })
+
+type PaymentType = Static<typeof Payment>
 
 fastify.register(FastifyStatic, {
   root: path.join(path.dirname(new URL(import.meta.url).pathname), '/dist'),
@@ -20,12 +34,21 @@ fastify.register(FastifyStatic, {
 
 fastify.register(FastifyFormbody)
 
-fastify.post<{ Body: { isAnnualPayment?: string; } }>('/create-checkout-session', async (request, reply) => {
-  const isAnnualPayment = checkIsAnnualPayment(request.body.isAnnualPayment)
-  if (isAnnualPayment && !isValidAnnualPaymentParameter(request.body.isAnnualPayment)) {
-    reply.code(400).send('"isAnnualPayment" value invalid')
-    return
-  }
+fastify.post<{ Body: PaymentType }>('/create-checkout-session', {
+  schema: {
+    body: Payment
+  },
+  preValidation: (request, _, done) => {
+    if (!request.body) {
+      Object.assign(request, {
+        body: {}
+      })
+    }
+    done()
+  },
+}, async (request, reply) => {
+  const { isAnnualPayment } = request.body
+
   const prices = await stripe.prices.list({
     limit: 1,
     type: isAnnualPayment ? 'recurring' : 'one_time',
@@ -49,16 +72,12 @@ fastify.post<{ Body: { isAnnualPayment?: string; } }>('/create-checkout-session'
     cancel_url: 'http://localhost:8080',
   })
 
+  if (!session.url) {
+    throw new Error('Clould not retrieve Stripe session URL')
+  }
+
   reply.redirect(303, session.url)
 })
 
-const start = async () => {
-  await fastify.listen({ port: process.env.PORT || 8080 })
-}
+await fastify.listen({ port: process.env.PORT || 8080 })
 
-try {
-  await start()
-} catch (err) {
-  fastify.log.error(err)
-  process.exit(1)
-}
