@@ -21,7 +21,7 @@ function App() {
               onChange={() => setIfAnnualPayment(!isAnnualPayment)}
               inputProps={{ role: 'switch' }}
             />
-          } label="継続支払いにする" />
+          } label="定期支払いにする" />
           <Button id="checkout-and-portal-button" type="submit" variant="contained">
             支払う
           </Button>
