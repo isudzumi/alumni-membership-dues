@@ -9,7 +9,7 @@
     "dev-server": "concurrently 'npm:watch-ts' 'npm:watch-node'",
     "watch-ts": "esbuild server.ts --watch --outfile=server.js",
     "watch-node": "nodemon server.js",
-    "build": "tsc && vite build",
+    "build": "tsc && esbuild server.ts --platform=node --outfile=server.js && vite build",
     "start": "node server.js",
     "preview": "vite preview"
   },
