@@ -79,5 +79,8 @@ fastify.post<{ Body: PaymentType }>('/create-checkout-session', {
   reply.redirect(303, session.url)
 })
 
-await fastify.listen({ port: process.env.PORT || 8080 })
+await fastify.listen({
+  port: process.env.PORT ?? 8080,
+  host: process.env.HOST ?? 'localhost',
+})
 
